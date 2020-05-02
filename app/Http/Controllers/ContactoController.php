@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Mail\MensajeRecibido;
+use Illuminate\Support\facades\Mail;
+class ContactoController extends Controller
+{
+    public function store(){
+        $mensaje = request()->validate([
+            'nombre' => 'required',
+            'email' => 'required|email',
+            'asunto' => 'required',
+            'mensaje' => 'required|min:3',
+        ],[
+            'nombre.required' => 'Ingresa tu nombre',
+            'email.required' => 'Ingresa tu correo',
+            'asunto.required' => 'Ingresa un asunto',
+            'mensaje.required' => 'Ingresa el mensaje'
+        ]);
+        Mail::to('carlosarmanruizato@gmail.com')->queue(new MensajeRecibido($mensaje));        
+        //return 'Mensaje Enviado';
+        return back()->with('estado','Gracias por ponerte en contacto,te responderemos a la brevedad');
+    }
+}
